@@ -7,7 +7,6 @@ const memberSummary = document.querySelector("#memberSummary");
 const progressStep = document.querySelector("#progressStep");
 const formError = document.querySelector("#formError");
 const successModal = document.querySelector("#successModal");
-const resetButton = document.querySelector("#resetButton");
 const submitButton = document.querySelector("#submitButton");
 const submitLabel = submitButton.querySelector(".submit-label");
 const successTeamName = document.querySelector("#successTeamName");
@@ -251,13 +250,18 @@ form.addEventListener("submit", async (event) => {
 });
 
 linkedinShareButton.addEventListener("click", async () => {
+  const shareUrl = new URL("https://www.linkedin.com/sharing/share-offsite/");
+  shareUrl.searchParams.set("url", window.location.href.split("#")[0]);
+  const linkedinWindow = window.open(shareUrl, "_blank");
+
   try {
     await copyLinkedinPost();
-    const shareUrl = new URL("https://www.linkedin.com/sharing/share-offsite/");
-    shareUrl.searchParams.set("url", window.location.href.split("#")[0]);
-    window.open(shareUrl, "_blank", "noopener,noreferrer");
   } catch {
-    shareStatus.textContent = "Copy the draft above, then open LinkedIn to share it.";
+    shareStatus.textContent = "LinkedIn opened. Copy the draft above and paste it into your post.";
+  }
+
+  if (!linkedinWindow) {
+    shareStatus.innerHTML = `Popup blocked. <a href="${shareUrl}" target="_blank" rel="noreferrer">Open LinkedIn here</a>.`;
   }
 });
 
@@ -267,19 +271,6 @@ copyPostButton.addEventListener("click", async () => {
   } catch {
     shareStatus.textContent = "Select and copy the draft above.";
   }
-});
-
-resetButton.addEventListener("click", () => {
-  form.reset();
-  savedMembers.clear();
-  proofFiles.clear();
-  processingProofs.clear();
-  renderMembers(2);
-  successModal.hidden = true;
-  document.body.classList.remove("modal-open");
-  shareStatus.textContent = "";
-  window.scrollTo({ top: 0, behavior: "smooth" });
-  updateSubmitState();
 });
 
 renderMembers(2);
