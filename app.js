@@ -11,9 +11,6 @@ const submitButton = document.querySelector("#submitButton");
 const submitLabel = submitButton.querySelector(".submit-label");
 const successTeamName = document.querySelector("#successTeamName");
 const linkedinDraft = document.querySelector("#linkedinDraft");
-const linkedinShareButton = document.querySelector("#linkedinShareButton");
-const copyPostButton = document.querySelector("#copyPostButton");
-const shareStatus = document.querySelector("#shareStatus");
 
 const savedMembers = new Map();
 const proofFiles = new Map();
@@ -31,11 +28,6 @@ Excited to take on the challenge with Dropp and connect with an incredible commu
 Follow Dropp on LinkedIn: https://www.linkedin.com/company/ondropp/
 
 #Hackfluence2026 #Dropp #Hackathon #Builders #CreatorEconomy`;
-}
-
-async function copyLinkedinPost() {
-  await navigator.clipboard.writeText(generatedLinkedinPost);
-  shareStatus.textContent = "Post copied. Paste it into LinkedIn and share!";
 }
 
 function saveVisibleMembers() {
@@ -239,37 +231,12 @@ form.addEventListener("submit", async (event) => {
     generatedLinkedinPost = createLinkedinPost(teamName);
     successTeamName.textContent = teamName;
     linkedinDraft.textContent = generatedLinkedinPost;
-    shareStatus.textContent = "";
     successModal.hidden = false;
     document.body.classList.add("modal-open");
   } catch (error) {
     formError.textContent = error.message;
   } finally {
     updateSubmitState();
-  }
-});
-
-linkedinShareButton.addEventListener("click", async () => {
-  const shareUrl = new URL("https://www.linkedin.com/sharing/share-offsite/");
-  shareUrl.searchParams.set("url", window.location.href.split("#")[0]);
-  const linkedinWindow = window.open(shareUrl, "_blank");
-
-  try {
-    await copyLinkedinPost();
-  } catch {
-    shareStatus.textContent = "LinkedIn opened. Copy the draft above and paste it into your post.";
-  }
-
-  if (!linkedinWindow) {
-    shareStatus.innerHTML = `Popup blocked. <a href="${shareUrl}" target="_blank" rel="noreferrer">Open LinkedIn here</a>.`;
-  }
-});
-
-copyPostButton.addEventListener("click", async () => {
-  try {
-    await copyLinkedinPost();
-  } catch {
-    shareStatus.textContent = "Select and copy the draft above.";
   }
 });
 
