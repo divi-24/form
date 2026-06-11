@@ -148,11 +148,29 @@
 
     <div id="successModal" class="success-modal" hidden>
       <div class="success-card">
-        <img src="./assets/dropp-logo-mark.png" alt="" />
+        <div class="success-celebration" aria-hidden="true">
+          <span>+</span>
+          <img src="./assets/dropp-logo-mark.png" alt="" />
+          <span>+</span>
+        </div>
         <p class="eyebrow">Registration received</p>
-        <h2>Your team is officially in.</h2>
-        <p>We'll use the team leader's email for all Hackfluence 2026 updates.</p>
-        <button id="resetButton" type="button">Register another team</button>
+        <h2><span id="successTeamName">Your team</span> is officially in.</h2>
+        <p class="success-copy">Share the news on LinkedIn and let the world know you're building at Hackfluence 2026.</p>
+
+        <div class="linkedin-share">
+          <div class="linkedin-share-head">
+            <span class="linkedin-icon">in</span>
+            <strong>Your LinkedIn post is ready</strong>
+          </div>
+          <p id="linkedinDraft"></p>
+          <button id="linkedinShareButton" class="linkedin-button" type="button">
+            Copy post & open LinkedIn <span>↗</span>
+          </button>
+          <button id="copyPostButton" class="copy-button" type="button">Copy post only</button>
+          <small id="shareStatus" aria-live="polite"></small>
+        </div>
+
+        <button id="resetButton" class="reset-button" type="button">Register another team</button>
       </div>
     </div>
 

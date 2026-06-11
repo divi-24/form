@@ -219,12 +219,22 @@ fieldset { margin: 0; padding: 0; border: 0; }
 
 .success-modal { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; padding: 20px; background: rgba(9,6,16,.72); backdrop-filter: blur(10px); }
 .success-modal[hidden] { display: none; }
-.success-card { width: min(500px, 100%); padding: 42px; border: 2px solid var(--ink); border-radius: 28px; background: var(--paper); box-shadow: 12px 14px 0 var(--pink); text-align: center; }
-.success-card img { width: 80px; height: 80px; border-radius: 20px; }
+.success-card { width: min(620px, 100%); max-height: calc(100svh - 32px); padding: 38px; border: 2px solid var(--ink); border-radius: 28px; background: var(--paper); box-shadow: 12px 14px 0 var(--pink); overflow-y: auto; text-align: center; }
+.success-celebration { display: flex; justify-content: center; align-items: center; gap: 16px; color: var(--pink); font-size: 28px; }
+.success-celebration img { width: 74px; height: 74px; border: 2px solid var(--ink); border-radius: 20px; box-shadow: 4px 4px 0 var(--ink); }
 .success-card .eyebrow { margin: 18px auto 12px; }
-.success-card h2 { margin-bottom: 12px; font-size: 46px; line-height: .95; letter-spacing: -.05em; }
-.success-card p:last-of-type { color: rgba(9,6,16,.65); }
-.success-card button { margin: 24px auto 0; background: var(--lime); color: var(--ink); }
+.success-card h2 { margin-bottom: 12px; font-size: clamp(36px, 7vw, 50px); line-height: .95; letter-spacing: -.05em; }
+.success-card h2 span { color: var(--pink); }
+.success-copy { color: rgba(9,6,16,.65); }
+.linkedin-share { margin-top: 24px; padding: 20px; border: 2px solid var(--ink); border-radius: 20px; background: #e9f5ff; text-align: left; }
+.linkedin-share-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.linkedin-icon { display: grid; place-items: center; width: 32px; height: 32px; border-radius: 6px; background: #0a66c2; color: white; font-weight: 950; }
+.linkedin-share p { max-height: 150px; margin-bottom: 16px; padding: 14px; border: 2px solid rgba(9,6,16,.16); border-radius: 12px; background: white; overflow-y: auto; color: rgba(9,6,16,.72); font-size: 12px; line-height: 1.5; white-space: pre-line; }
+.success-card .linkedin-button { display: flex; justify-content: space-between; width: 100%; margin: 0; background: #0a66c2; color: white; }
+.success-card .copy-button { margin: 12px auto 0; padding: 0; border: 0; background: none; box-shadow: none; color: #0a66c2; min-height: auto; font-size: 12px; }
+.success-card .copy-button:hover { transform: none; box-shadow: none; text-decoration: underline; }
+.linkedin-share small { display: block; min-height: 16px; margin-top: 10px; color: #07529c; font-weight: 800; text-align: center; }
+.success-card .reset-button { margin: 20px auto 0; background: var(--lime); color: var(--ink); }
 
 @media (max-width: 760px) {
   .topbar { top: 8px; grid-template-columns: minmax(0, 1fr) auto auto; gap: 7px; width: calc(100% - 18px); min-height: 60px; margin-top: 8px; padding: 7px 8px 7px 13px; border-radius: 18px; box-shadow: 0 5px 0 var(--ink), 0 14px 28px rgba(9,6,16,.16); }
@@ -254,6 +264,9 @@ fieldset { margin: 0; padding: 0; border: 0; }
   .proof-intro { align-items: stretch; flex-direction: column; }
   .reference-link { text-align: center; }
   .social-block .social-links { grid-template-columns: 1fr; }
+  .success-card { padding: 26px 18px; border-radius: 22px; }
+  .success-celebration img { width: 60px; height: 60px; }
+  .linkedin-share { padding: 14px; }
 }
 
 @media (min-width: 761px) and (max-width: 1040px) {
