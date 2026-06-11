@@ -1,240 +1,208 @@
 <!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="x-apple-disable-message-reformatting">
-  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
-  <title>Your Dropp Founder Benefit</title>
-  <style>
-    html,
-    body {
-      margin: 0 !important;
-      padding: 0 !important;
-      width: 100% !important;
-      background: #f5f1f4;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#aaa3f4" />
+    <title>Hackfluence 2026 | Team Registration</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-grid" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Hackfluence 2026">
+        <img src="./assets/hackfluence-wordmark.svg" alt="Hackfluence 2026" />
+      </a>
+      <span class="step-pill"><small>Step</small><b id="progressStep">01</b><i>/ 03</i></span>
+      <div class="powered-by">
+        <span>Powered by</span>
+        <a href="https://ondropp.app/signup" target="_blank" rel="noreferrer" aria-label="Sign up for Dropp">
+          <img src="./assets/dropp-logo-wordmark.png" alt="Dropp" />
+        </a>
+      </div>
+    </header>
 
-    table,
-    td {
-      border-collapse: collapse !important;
-    }
+    <main>
+      <section class="intro">
+        <div class="intro-copy">
+          <p class="eyebrow">Official team check-in</p>
+          <h1><span class="hero-line">Ready to make</span><span class="hero-line hero-accent">influence happen?</span></h1>
+          <p class="lede">
+            Register your full team, show us your Dropp profiles, and lock in
+            your place at Hackfluence 2026.
+          </p>
+          <div class="hero-tags" aria-label="Registration highlights">
+            <span>2–4 members</span>
+            <span>Every profile verified</span>
+            <span>3 minute check-in</span>
+          </div>
+        </div>
+        <aside class="info-card">
+          <div class="info-card-top">
+            <span>Before you begin</span>
+            <span class="scribble">3 mins</span>
+          </div>
+          <ul>
+            <li>Teams must have <strong>2–4 members</strong>.</li>
+            <li>The team leader counts as Member 1.</li>
+            <li>Every member needs a Dropp account.</li>
+            <li>Keep each member's profile screenshot ready.</li>
+          </ul>
+        </aside>
+      </section>
 
-    img {
-      border: 0;
-      display: block;
-      line-height: 100%;
-      outline: none;
-      text-decoration: none;
-    }
+      <form id="registrationForm" novalidate>
+        <section class="form-section">
+          <div class="section-heading">
+            <span class="section-number">01</span>
+            <div>
+              <p class="section-kicker">Start here</p>
+              <h2>Tell us about the team</h2>
+            </div>
+          </div>
 
-    a {
-      text-decoration: none;
-    }
+          <div class="field full">
+            <label for="teamName">Team name <em>*</em></label>
+            <input id="teamName" name="teamName" type="text" placeholder="The name you'll win with" required />
+          </div>
 
-    @media only screen and (max-width: 640px) {
-      .email-shell {
-        width: 100% !important;
-      }
+          <fieldset class="size-picker">
+            <legend>How many people are on your team? <em>*</em></legend>
+            <p>Include the team leader in this count.</p>
+            <div class="size-options">
+              <label>
+                <input type="radio" name="teamSize" value="2" checked />
+                <span><b>2</b><small>Leader + 1</small></span>
+              </label>
+              <label>
+                <input type="radio" name="teamSize" value="3" />
+                <span><b>3</b><small>Leader + 2</small></span>
+              </label>
+              <label>
+                <input type="radio" name="teamSize" value="4" />
+                <span><b>4</b><small>Leader + 3</small></span>
+              </label>
+            </div>
+          </fieldset>
+        </section>
 
-      .mobile-pad {
-        padding-right: 22px !important;
-        padding-left: 22px !important;
-      }
+        <section class="form-section">
+          <div class="section-heading">
+            <span class="section-number pink">02</span>
+            <div>
+              <p class="section-kicker">Your crew</p>
+              <h2>Add the builders</h2>
+              <p id="memberSummary">Showing fields for 2 team members.</p>
+            </div>
+          </div>
 
-      .hero-title {
-        font-size: 45px !important;
-        line-height: 42px !important;
-      }
+          <div id="members" class="members"></div>
+        </section>
 
-      .benefit-title {
-        font-size: 31px !important;
-        line-height: 34px !important;
-      }
+        <section class="form-section">
+          <div class="section-heading">
+            <span class="section-number blue">03</span>
+            <div>
+              <p class="section-kicker">Final check</p>
+              <h2>Join the Dropp side</h2>
+              <p>Complete these quick checks to finish registration.</p>
+            </div>
+          </div>
 
-      .launch-time {
-        font-size: 34px !important;
-        line-height: 37px !important;
-      }
+          <div class="proof-intro">
+            <div>
+              <p class="field-label">Proof required from every team member <em>*</em></p>
+              <p class="helper">Each member must log in to Dropp, upload their own profile screenshot, follow every social handle, and tick their checkpoint.</p>
+            </div>
+            <a class="reference-link" href="https://drive.google.com/file/d/1T8oDQkWOtJ4vy5gLL9F5sQINAXiAFdWZ/view?usp=drivesdk" target="_blank" rel="noreferrer">
+              View screenshot reference <span>↗</span>
+            </a>
+          </div>
 
-      .cta-button {
-        display: block !important;
-        box-sizing: border-box !important;
-        width: 100% !important;
-        text-align: center !important;
-      }
-
-      .social-cell {
-        display: block !important;
-        width: 100% !important;
-        padding: 5px 0 !important;
-      }
-    }
-  </style>
-</head>
-<body style="margin:0; padding:0; background:#f5f1f4;">
-  <div style="display:none; max-height:0; overflow:hidden; opacity:0;">
-    You believed in Dropp before launch. Your first month of Dropp Premium is on us.
-  </div>
-
-  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:#f5f1f4;">
-    <tr>
-      <td align="center" style="padding:24px 10px;">
-        <table class="email-shell" role="presentation" width="620" cellspacing="0" cellpadding="0" border="0" style="width:620px; max-width:620px; background:#ffffff; border-radius:28px; overflow:hidden; box-shadow:0 18px 60px rgba(30,10,60,0.10);">
-          <tr>
-            <td class="mobile-pad" style="padding:28px 42px 22px; background:#ffffff; border-bottom:1px solid #eee8ed;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
-                <tr>
-                  <td style="font-family:Georgia, 'Times New Roman', serif; color:#17131d; font-size:34px; font-weight:bold; letter-spacing:-2px;">
-                    dropp<span style="color:#f0057a;">.</span>
-                  </td>
-                  <td align="right" style="font-family:Arial, Helvetica, sans-serif; color:#f0057a; font-size:10px; font-weight:bold; letter-spacing:1.4px; text-transform:uppercase;">
-                    Founding Creator
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="mobile-pad" style="padding:54px 42px 48px; background:#f0057a;">
-              <div style="margin-bottom:20px; font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:11px; font-weight:bold; letter-spacing:1.8px; text-transform:uppercase;">
-                A little love from Dropp
+          <div class="social-block">
+              <p class="field-label">Follow Dropp everywhere <em>*</em></p>
+              <p class="helper">Every team member must follow all three handles before completing their checkpoint below.</p>
+              <div class="social-links">
+                <a href="https://ondropp.app/signup" target="_blank" rel="noreferrer">Sign up on Dropp <span>↗</span></a>
+                <a href="https://www.instagram.com/dropp_app" target="_blank" rel="noreferrer">Instagram <span>↗</span></a>
+                <a href="https://x.com/ondroppapp" target="_blank" rel="noreferrer">X / Twitter <span>↗</span></a>
+                <a href="https://www.linkedin.com/company/ondropp/" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a>
               </div>
-              <div class="hero-title" style="font-family:Georgia, 'Times New Roman', serif; color:#ffffff; font-size:62px; font-weight:bold; line-height:57px; letter-spacing:-3px;">
-                Hey Creator,<br>
-                yes, we love you.
-              </div>
-              <div style="width:54px; height:4px; margin:27px 0 25px; border-radius:99px; background:#17131d;"></div>
-              <div style="font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:17px; font-weight:bold; line-height:27px;">
-                Of course, we love all creators. And of course, you're one of them. 
-              </div>
-            </td>
-          </tr>
+          </div>
 
-          <tr>
-            <td class="mobile-pad" style="padding:42px 42px 18px; font-family:Arial, Helvetica, sans-serif; color:#5f5865; font-size:16px; line-height:27px;">
-              You believed in Dropp before launch. You joined the waitlist. You became part of our founding creator community.
-              <br><br>
-              <strong style="color:#17131d;">So we wanted to say thank you.</strong>
-            </td>
-          </tr>
+          <div id="memberProofs" class="member-proofs"></div>
 
-          <tr>
-            <td class="mobile-pad" style="padding:20px 42px 32px;">
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; background:#17131d; border-radius:22px;">
-                <tr>
-                  <td style="padding:30px;">
-                    <div style="margin-bottom:10px; font-family:Arial, Helvetica, sans-serif; color:#ff78b8; font-size:10px; font-weight:bold; letter-spacing:1.6px; text-transform:uppercase;">
-                      Your founder benefit
-                    </div>
-                    <div class="benefit-title" style="font-family:Georgia, 'Times New Roman', serif; color:#ffffff; font-size:38px; font-weight:bold; line-height:41px; letter-spacing:-1.5px;">
-                      1 month of Dropp Premium.
-                    </div>
-                    <div style="margin-top:12px; font-family:Arial, Helvetica, sans-serif; color:#bdfc5a; font-size:17px; font-weight:bold; line-height:24px;">
-                      Completely free.
-                    </div>
-                    <div style="margin-top:20px; padding-top:18px; border-top:1px solid #3b3541; font-family:Arial, Helvetica, sans-serif; color:#c9c4cc; font-size:13px; line-height:21px;">
-                      No catches. No hidden fees. Just our way of thanking the creators who trusted us from day one.
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+          <label class="confirm-check terms-check">
+            <input type="checkbox" name="accuracyConfirmation" required />
+            <span>I confirm these details are accurate and my team has 2–4 members.</span>
+          </label>
 
-          <tr>
-            <td class="mobile-pad" style="padding:14px 42px 38px;">
-              <div style="font-family:Georgia, 'Times New Roman', serif; color:#17131d; font-size:29px; font-weight:bold; line-height:34px; letter-spacing:-1px;">
-                Claim your free Premium
-              </div>
-              <div style="margin-top:12px; font-family:Arial, Helvetica, sans-serif; color:#5f5865; font-size:15px; line-height:25px;">
-                To activate your free Premium access, simply fill out the short form below.
-              </div>
+          <div class="submit-row">
+            <p><strong>All set?</strong><br />Give everything one last look.</p>
+            <button id="submitButton" type="submit" disabled><span class="submit-label">Complete all fields</span> <span>→</span></button>
+          </div>
+          <p id="formError" class="form-error" role="alert"></p>
+        </section>
+      </form>
+    </main>
 
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; margin:22px 0; background:#fff5fa; border:1px solid #ffd4e8; border-radius:17px;">
-                <tr>
-                  <td style="padding:18px 20px; font-family:Arial, Helvetica, sans-serif; color:#5f5865; font-size:13px; line-height:24px;">
-                    <strong style="color:#17131d;">We will only ask for:</strong><br>
-                    Full name &nbsp;&bull;&nbsp; Username &nbsp;&bull;&nbsp; Email address &nbsp;&bull;&nbsp; Phone number
-                  </td>
-                </tr>
-              </table>
+    <div id="successModal" class="success-modal" hidden>
+      <div class="success-card">
+        <img src="./assets/dropp-logo-mark.png" alt="" />
+        <p class="eyebrow">Registration received</p>
+        <h2>Your team is officially in.</h2>
+        <p>We'll use the team leader's email for all Hackfluence 2026 updates.</p>
+        <button id="resetButton" type="button">Register another team</button>
+      </div>
+    </div>
 
-              <a class="cta-button" href="https://forms.gle/MwNgBx1oYT1h63Ko7" target="_blank" style="display:inline-block; padding:17px 28px; border-radius:999px; background:#f0057a; color:#ffffff; font-family:Arial, Helvetica, sans-serif; font-size:14px; font-weight:bold; line-height:18px;">
-                Claim My Free Premium &nbsp;&rarr;
-              </a>
-              <div style="margin-top:13px; font-family:Arial, Helvetica, sans-serif; color:#8f8893; font-size:11px; line-height:18px;">
-                Once submitted, your Premium access will be activated after launch.
-              </div>
-            </td>
-          </tr>
+    <template id="memberTemplate">
+      <article class="member-card">
+        <div class="member-card-head">
+          <span class="member-index"></span>
+          <div>
+            <p class="member-role"></p>
+            <h3 class="member-title"></h3>
+          </div>
+          <span class="required-note">Required</span>
+        </div>
+        <div class="field-grid">
+          <div class="field">
+            <label class="name-label"></label>
+            <input class="name-input" type="text" placeholder="Full name" required />
+          </div>
+          <div class="field">
+            <label class="email-label"></label>
+            <input class="email-input" type="email" placeholder="name@example.com" required />
+          </div>
+        </div>
+      </article>
+    </template>
 
-          <tr>
-            <td class="mobile-pad" style="padding:38px 42px; background:#eee9ff;">
-              <div style="font-family:Arial, Helvetica, sans-serif; color:#6c51d9; font-size:10px; font-weight:bold; letter-spacing:1.7px; text-transform:uppercase;">
-                Launch day
-              </div>
-              <div class="launch-time" style="margin-top:13px; font-family:Georgia, 'Times New Roman', serif; color:#17131d; font-size:43px; font-weight:bold; line-height:46px; letter-spacing:-1.8px;">
-                Monday, 8 June 2026<br>
-                <span style="color:#f0057a;">8:00 PM IST</span>
-              </div>
-              <div style="margin-top:16px; font-family:Arial, Helvetica, sans-serif; color:#5f5865; font-size:14px; font-weight:bold; line-height:22px;">
-                Be there from the start.
-              </div>
-            </td>
-          </tr>
+    <template id="proofTemplate">
+      <article class="proof-card">
+        <div class="proof-card-head">
+          <span class="member-index proof-index"></span>
+          <div>
+            <p class="member-role proof-role"></p>
+            <h3 class="proof-title"></h3>
+          </div>
+          <span class="required-note">Screenshot + checkpoint</span>
+        </div>
+        <label class="upload-zone">
+          <input class="proof-input" type="file" accept="image/png,image/jpeg,image/webp" required />
+          <img class="proof-preview" alt="" hidden />
+          <span class="upload-icon">↑</span>
+          <strong class="proof-upload-title">Drop this member's screenshot here</strong>
+          <small class="proof-upload-help">PNG, JPG or WEBP · Optimized automatically</small>
+        </label>
+        <label class="confirm-check member-check">
+          <input class="proof-check" type="checkbox" required />
+          <span class="proof-check-label"></span>
+        </label>
+      </article>
+    </template>
 
-          <tr>
-            <td class="mobile-pad" style="padding:42px 42px 32px;">
-              <div style="font-family:Georgia, 'Times New Roman', serif; color:#17131d; font-size:29px; font-weight:bold; line-height:34px; letter-spacing:-1px;">
-                Join the movement
-              </div>
-              <div style="margin-top:12px; font-family:Arial, Helvetica, sans-serif; color:#5f5865; font-size:15px; line-height:25px;">
-                Before launch, follow Dropp and become part of our launch campaign. Help us build the most creator-first platform on the internet.
-              </div>
-
-              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="width:100%; margin-top:22px;">
-                <tr>
-                  <td class="social-cell" width="25%" align="center" style="padding:4px;">
-                    <a href="https://www.instagram.com/dropp_app" target="_blank" style="display:block; padding:12px 6px; border:1px solid #e8e2e7; border-radius:12px; color:#17131d; font-family:Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold;">Instagram</a>
-                  </td>
-                  <td class="social-cell" width="25%" align="center" style="padding:4px;">
-                    <a href="https://www.linkedin.com/company/ondropp/" target="_blank" style="display:block; padding:12px 6px; border:1px solid #e8e2e7; border-radius:12px; color:#17131d; font-family:Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold;">LinkedIn</a>
-                  </td>
-                  <td class="social-cell" width="25%" align="center" style="padding:4px;">
-                    <a href="https://x.com/ondroppapp" target="_blank" style="display:block; padding:12px 6px; border:1px solid #e8e2e7; border-radius:12px; color:#17131d; font-family:Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold;">X</a>
-                  </td>
-                  <td class="social-cell" width="25%" align="center" style="padding:4px;">
-                    <a href="https://chat.whatsapp.com/KOzRIliMD6vFTL5O9qmnVv" target="_blank" style="display:block; padding:12px 6px; border:1px solid #e8e2e7; border-radius:12px; color:#17131d; font-family:Arial, Helvetica, sans-serif; font-size:11px; font-weight:bold;">WhatsApp</a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="mobile-pad" style="padding:34px 42px 38px; background:#17131d;">
-              <div style="font-family:Arial, Helvetica, sans-serif; color:#ffffff; font-size:15px; line-height:25px;">
-                Dropp is built to be a calmer, creator-focused space where opportunities, collaborations, and growth come first.
-                <br><br>
-                And because you joined early, you will always be one of our founding creators.
-                <br><br>
-                <strong>Thank you for believing in us.<br>See you on launch day.</strong>
-              </div>
-              <div style="margin-top:30px; padding-top:24px; border-top:1px solid #3b3541;">
-                <div style="font-family:Georgia, 'Times New Roman', serif; color:#ffffff; font-size:25px; font-weight:bold; letter-spacing:-1px;">
-                  Team Dropp<span style="color:#f0057a;">.</span>
-                </div>
-                <div style="margin-top:7px; font-family:Arial, Helvetica, sans-serif; color:#aaa4ae; font-size:10px; font-weight:bold; letter-spacing:1.2px; text-transform:uppercase;">
-                  Built for creators. Backed by creators.
-                </div>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
+    <script src="./app.js"></script>
+  </body>
 </html>
