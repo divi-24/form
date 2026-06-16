@@ -1,7 +1,5 @@
 const form = document.querySelector("#registrationForm");
 const membersContainer = document.querySelector("#members");
-const memberTemplate = document.querySelector("#memberTemplate");
-const proofTemplate = document.querySelector("#proofTemplate");
 const memberProofs = document.querySelector("#memberProofs");
 const memberSummary = document.querySelector("#memberSummary");
 const progressStep = document.querySelector("#progressStep");
@@ -13,6 +11,7 @@ const successTeamName = document.querySelector("#successTeamName");
 const linkedinDraft = document.querySelector("#linkedinDraft");
 
 const savedMembers = new Map();
+const droppUsernamePattern = /^[a-z0-9][a-z0-9_-]*$/i;
 let generatedLinkedinPost = "";
 let isSubmitting = false;
 let submitStartedAt = 0;
@@ -48,7 +47,7 @@ function getDroppUsername(value) {
     const [, profileSegment, username] = url.pathname.replace(/\/+$/, "").split("/");
     const isDroppHost = ["ondropp.app", "www.ondropp.app"].includes(url.hostname.toLowerCase());
 
-    if (url.protocol !== "https:" || !isDroppHost || profileSegment !== "profile" || !username) {
+    if (url.protocol !== "https:" || !isDroppHost || profileSegment !== "profile" || !droppUsernamePattern.test(username)) {
       return "";
     }
 
@@ -58,61 +57,78 @@ function getDroppUsername(value) {
   }
 }
 
+function createMemberCard(index, saved) {
+  const isLeader = index === 1;
+  const card = document.createElement("article");
+  card.className = "member-card";
+  card.dataset.member = index;
+
+  card.innerHTML = `
+    <div class="member-card-head">
+      <span class="member-index">${String(index).padStart(2, "0")}</span>
+      <div>
+        <p class="member-role">${isLeader ? "Primary contact" : "Team member"}</p>
+        <h3 class="member-title">${isLeader ? "Team leader" : `Member ${index}`}</h3>
+      </div>
+      <span class="required-note">Required</span>
+    </div>
+    <div class="field-grid">
+      <div class="field">
+        <label class="name-label" for="member${index}Name">${isLeader ? "Leader" : `Member ${index}`} name *</label>
+        <input id="member${index}Name" class="name-input" name="member${index}Name" type="text" placeholder="Full name" required />
+      </div>
+      <div class="field">
+        <label class="email-label" for="member${index}Email">${isLeader ? "Leader" : `Member ${index}`} email *</label>
+        <input id="member${index}Email" class="email-input" name="member${index}Email" type="email" placeholder="name@example.com" required />
+      </div>
+    </div>
+  `;
+
+  card.querySelector(".name-input").value = saved.name || "";
+  card.querySelector(".email-input").value = saved.email || "";
+
+  return card;
+}
+
+function createProofCard(index, saved) {
+  const isLeader = index === 1;
+  const proofCard = document.createElement("article");
+  proofCard.className = "proof-card";
+  proofCard.dataset.member = index;
+
+  proofCard.innerHTML = `
+    <div class="proof-card-head">
+      <span class="member-index proof-index">${String(index).padStart(2, "0")}</span>
+      <div>
+        <p class="member-role proof-role">${isLeader ? "Team leader proof" : "Team member proof"}</p>
+        <h3 class="proof-title">${isLeader ? "Team leader" : `Member ${index}`}</h3>
+      </div>
+      <span class="required-note">Profile URL + checkpoint</span>
+    </div>
+    <div class="field">
+      <label class="profile-url-label" for="member${index}DroppProfileUrl">${isLeader ? "Leader" : `Member ${index}`} Dropp profile URL *</label>
+      <input id="member${index}DroppProfileUrl" class="profile-url-input" name="member${index}DroppProfileUrl" type="url" inputmode="url" placeholder="Paste your Dropp profile URL" title="Use your own Dropp profile URL from your profile page." required />
+    </div>
+    <label class="confirm-check member-check">
+      <input class="proof-check" name="member${index}DroppConfirmation" type="checkbox" required />
+      <span class="proof-check-label">${isLeader ? "The team leader" : `Member ${index}`} confirms this is their own Dropp profile and they followed all social handles.</span>
+    </label>
+  `;
+
+  proofCard.querySelector(".profile-url-input").value = saved.droppProfileUrl || "";
+
+  return proofCard;
+}
+
 function renderMembers(size) {
   saveVisibleMembers();
   membersContainer.innerHTML = "";
   memberProofs.innerHTML = "";
 
   for (let index = 1; index <= size; index += 1) {
-    const fragment = memberTemplate.content.cloneNode(true);
-    const card = fragment.querySelector(".member-card");
-    const isLeader = index === 1;
     const saved = savedMembers.get(index) || {};
-
-    card.dataset.member = index;
-    card.querySelector(".member-index").textContent = String(index).padStart(2, "0");
-    card.querySelector(".member-role").textContent = isLeader ? "Primary contact" : "Team member";
-    card.querySelector(".member-title").textContent = isLeader ? "Team leader" : `Member ${index}`;
-
-    const nameLabel = card.querySelector(".name-label");
-    const nameInput = card.querySelector(".name-input");
-    nameLabel.textContent = `${isLeader ? "Leader" : `Member ${index}`} name *`;
-    nameLabel.htmlFor = `member${index}Name`;
-    nameInput.id = `member${index}Name`;
-    nameInput.name = `member${index}Name`;
-    nameInput.value = saved.name || "";
-
-    const emailLabel = card.querySelector(".email-label");
-    const emailInput = card.querySelector(".email-input");
-    emailLabel.textContent = `${isLeader ? "Leader" : `Member ${index}`} email *`;
-    emailLabel.htmlFor = `member${index}Email`;
-    emailInput.id = `member${index}Email`;
-    emailInput.name = `member${index}Email`;
-    emailInput.value = saved.email || "";
-
-    membersContainer.appendChild(fragment);
-
-    const proofFragment = proofTemplate.content.cloneNode(true);
-    const proofCard = proofFragment.querySelector(".proof-card");
-    proofCard.dataset.member = index;
-    proofCard.querySelector(".proof-index").textContent = String(index).padStart(2, "0");
-    proofCard.querySelector(".proof-role").textContent = isLeader ? "Team leader proof" : "Team member proof";
-    proofCard.querySelector(".proof-title").textContent = isLeader ? "Team leader" : `Member ${index}`;
-
-    const profileUrlLabel = proofCard.querySelector(".profile-url-label");
-    const profileUrlInput = proofCard.querySelector(".profile-url-input");
-    profileUrlLabel.textContent = `${isLeader ? "Leader" : `Member ${index}`} Dropp profile URL *`;
-    profileUrlLabel.htmlFor = `member${index}DroppProfileUrl`;
-    profileUrlInput.id = `member${index}DroppProfileUrl`;
-    profileUrlInput.name = `member${index}DroppProfileUrl`;
-    profileUrlInput.value = saved.droppProfileUrl || "";
-
-    const proofCheck = proofCard.querySelector(".proof-check");
-    proofCheck.name = `member${index}DroppConfirmation`;
-    proofCard.querySelector(".proof-check-label").textContent =
-      `${isLeader ? "The team leader" : `Member ${index}`} confirms this is their own Dropp profile and they followed all social handles.`;
-
-    memberProofs.appendChild(proofFragment);
+    membersContainer.appendChild(createMemberCard(index, saved));
+    memberProofs.appendChild(createProofCard(index, saved));
   }
 
   memberSummary.textContent = `Showing fields for ${size} team members.`;
@@ -140,6 +156,11 @@ function validateUniqueDroppUsernames() {
     input.setCustomValidity("");
 
     const username = getDroppUsername(input.value);
+    if (input.value.trim() && !username) {
+      input.setCustomValidity("Use your own Dropp profile URL from your profile page.");
+      return;
+    }
+
     if (!username) return;
 
     const firstInput = seenUsernames.get(username);
