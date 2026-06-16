@@ -29,7 +29,7 @@
           <p class="eyebrow">Official team check-in</p>
           <h1><span class="hero-line">Ready to make</span><span class="hero-line hero-accent">influence happen?</span></h1>
           <p class="lede">
-            Register your full team, show us your Dropp profiles, and lock in
+            Register your full team, share your Dropp profile links, and lock in
             your place at Hackfluence 2026.
           </p>
           <div class="hero-tags" aria-label="Registration highlights">
@@ -47,7 +47,7 @@
             <li>Teams must have <strong>2–4 members</strong>.</li>
             <li>The team leader counts as Member 1.</li>
             <li>Every member needs a Dropp account.</li>
-            <li>Keep each member's profile screenshot ready.</li>
+            <li>Keep each member's Dropp profile URL ready.</li>
           </ul>
         </aside>
       </section>
@@ -113,10 +113,10 @@
           <div class="proof-intro">
             <div>
               <p class="field-label">Proof required from every team member <em>*</em></p>
-              <p class="helper">Each member must log in to Dropp, upload their own profile screenshot, follow every social handle, and tick their checkpoint.</p>
+              <p class="helper">Each member must create a Dropp profile, paste their own profile URL, follow every social handle, and tick their checkpoint.</p>
             </div>
             <a class="reference-link" href="https://drive.google.com/file/d/1T8oDQkWOtJ4vy5gLL9F5sQINAXiAFdWZ/view?usp=drivesdk" target="_blank" rel="noreferrer">
-              View screenshot reference <span>↗</span>
+              View profile URL reference <span>↗</span>
             </a>
           </div>
 
@@ -199,15 +199,12 @@
             <p class="member-role proof-role"></p>
             <h3 class="proof-title"></h3>
           </div>
-          <span class="required-note">Screenshot + checkpoint</span>
+          <span class="required-note">Profile URL + checkpoint</span>
         </div>
-        <label class="upload-zone">
-          <input class="proof-input" type="file" accept="image/png,image/jpeg,image/webp" required />
-          <img class="proof-preview" alt="" hidden />
-          <span class="upload-icon">↑</span>
-          <strong class="proof-upload-title">Drop this member's screenshot here</strong>
-          <small class="proof-upload-help">PNG, JPG or WEBP · Optimized automatically</small>
-        </label>
+        <div class="field">
+          <label class="profile-url-label"></label>
+          <input class="profile-url-input" type="url" inputmode="url" placeholder="Paste your Dropp profile URL" pattern="https://(www\.)?ondropp\.app/profile/[A-Za-z0-9][A-Za-z0-9_-]*(\?.*)?" title="Use your own Dropp profile URL from your profile page." required />
+        </div>
         <label class="confirm-check member-check">
           <input class="proof-check" type="checkbox" required />
           <span class="proof-check-label"></span>

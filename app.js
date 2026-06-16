@@ -13,10 +13,10 @@ const successTeamName = document.querySelector("#successTeamName");
 const linkedinDraft = document.querySelector("#linkedinDraft");
 
 const savedMembers = new Map();
-const proofFiles = new Map();
-const processingProofs = new Set();
-const maxScreenshotBytes = 850 * 1024;
 let generatedLinkedinPost = "";
+let isSubmitting = false;
+let submitStartedAt = 0;
+let submitTimer = null;
 
 function createLinkedinPost(teamName) {
   return `We're officially in for Hackfluence 2026!
@@ -33,19 +33,35 @@ Follow Dropp on LinkedIn: https://www.linkedin.com/company/ondropp/
 function saveVisibleMembers() {
   document.querySelectorAll(".member-card").forEach((card) => {
     const index = Number(card.dataset.member);
+    const profileUrlInput = document.querySelector(`#member${index}DroppProfileUrl`);
     savedMembers.set(index, {
       name: card.querySelector(".name-input").value,
       email: card.querySelector(".email-input").value,
+      droppProfileUrl: profileUrlInput?.value || "",
     });
   });
+}
+
+function getDroppUsername(value) {
+  try {
+    const url = new URL(value.trim());
+    const [, profileSegment, username] = url.pathname.replace(/\/+$/, "").split("/");
+    const isDroppHost = ["ondropp.app", "www.ondropp.app"].includes(url.hostname.toLowerCase());
+
+    if (url.protocol !== "https:" || !isDroppHost || profileSegment !== "profile" || !username) {
+      return "";
+    }
+
+    return username.toLowerCase();
+  } catch {
+    return "";
+  }
 }
 
 function renderMembers(size) {
   saveVisibleMembers();
   membersContainer.innerHTML = "";
   memberProofs.innerHTML = "";
-  proofFiles.clear();
-  processingProofs.clear();
 
   for (let index = 1; index <= size; index += 1) {
     const fragment = memberTemplate.content.cloneNode(true);
@@ -83,14 +99,18 @@ function renderMembers(size) {
     proofCard.querySelector(".proof-role").textContent = isLeader ? "Team leader proof" : "Team member proof";
     proofCard.querySelector(".proof-title").textContent = isLeader ? "Team leader" : `Member ${index}`;
 
-    const proofInput = proofCard.querySelector(".proof-input");
-    proofInput.id = `member${index}Screenshot`;
-    proofInput.name = `member${index}Screenshot`;
+    const profileUrlLabel = proofCard.querySelector(".profile-url-label");
+    const profileUrlInput = proofCard.querySelector(".profile-url-input");
+    profileUrlLabel.textContent = `${isLeader ? "Leader" : `Member ${index}`} Dropp profile URL *`;
+    profileUrlLabel.htmlFor = `member${index}DroppProfileUrl`;
+    profileUrlInput.id = `member${index}DroppProfileUrl`;
+    profileUrlInput.name = `member${index}DroppProfileUrl`;
+    profileUrlInput.value = saved.droppProfileUrl || "";
 
     const proofCheck = proofCard.querySelector(".proof-check");
     proofCheck.name = `member${index}DroppConfirmation`;
     proofCard.querySelector(".proof-check-label").textContent =
-      `${isLeader ? "The team leader" : `Member ${index}`} confirms they logged in to Dropp and followed all social handles.`;
+      `${isLeader ? "The team leader" : `Member ${index}`} confirms this is their own Dropp profile and they followed all social handles.`;
 
     memberProofs.appendChild(proofFragment);
   }
@@ -113,86 +133,51 @@ document.querySelectorAll(".form-section").forEach((section, index) => {
   observer.observe(section);
 });
 
-function canvasToBlob(canvas, quality) {
-  return new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", quality));
+function validateUniqueDroppUsernames() {
+  const seenUsernames = new Map();
+
+  document.querySelectorAll(".profile-url-input").forEach((input) => {
+    input.setCustomValidity("");
+
+    const username = getDroppUsername(input.value);
+    if (!username) return;
+
+    const firstInput = seenUsernames.get(username);
+    if (firstInput) {
+      input.setCustomValidity("Each team member must use a unique Dropp username.");
+      firstInput.setCustomValidity("Each team member must use a unique Dropp username.");
+      return;
+    }
+
+    seenUsernames.set(username, input);
+  });
 }
 
-async function optimizeScreenshot(file) {
-  if (file.size <= maxScreenshotBytes) return file;
-
-  const bitmap = await createImageBitmap(file);
-  const maxDimension = 1600;
-  const scale = Math.min(1, maxDimension / Math.max(bitmap.width, bitmap.height));
-  const canvas = document.createElement("canvas");
-  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
-  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
-  canvas.getContext("2d").drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-  bitmap.close();
-
-  let quality = 0.82;
-  let blob = await canvasToBlob(canvas, quality);
-  while (blob && blob.size > maxScreenshotBytes && quality > 0.42) {
-    quality -= 0.1;
-    blob = await canvasToBlob(canvas, quality);
-  }
-
-  if (!blob || blob.size > maxScreenshotBytes) {
-    throw new Error("This screenshot could not be optimized. Please upload a smaller image.");
-  }
-
-  return new File([blob], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
-}
-
-memberProofs.addEventListener("change", async (event) => {
-  if (!event.target.matches(".proof-input")) return;
-
-  const fileInput = event.target;
-  const file = fileInput.files[0];
-  const proofCard = fileInput.closest(".proof-card");
-  const memberIndex = Number(proofCard.dataset.member);
-  const uploadPreview = proofCard.querySelector(".proof-preview");
-  const uploadTitle = proofCard.querySelector(".proof-upload-title");
-  const uploadHelp = proofCard.querySelector(".proof-upload-help");
-  formError.textContent = "";
-  if (!file) return;
-
-  if (file.size > 8 * 1024 * 1024) {
-    fileInput.value = "";
-    proofFiles.delete(memberIndex);
-    formError.textContent = "That screenshot is over 8 MB. Please choose a smaller image.";
-    updateSubmitState();
+function updateSubmitState() {
+  if (isSubmitting) {
+    const elapsedSeconds = Math.max(0, Math.floor((Date.now() - submitStartedAt) / 1000));
+    submitButton.disabled = true;
+    submitLabel.textContent = `Saving registration... ${elapsedSeconds}s`;
     return;
   }
 
-  processingProofs.add(memberIndex);
-  proofFiles.delete(memberIndex);
-  uploadTitle.textContent = "Optimizing screenshot...";
-  uploadHelp.textContent = "One moment";
-  updateSubmitState();
-
-  try {
-    const optimizedFile = await optimizeScreenshot(file);
-    proofFiles.set(memberIndex, optimizedFile);
-    uploadPreview.src = URL.createObjectURL(optimizedFile);
-    uploadPreview.hidden = false;
-    uploadTitle.textContent = optimizedFile.name;
-    uploadHelp.textContent = "Screenshot ready · Click to replace";
-  } catch (error) {
-    fileInput.value = "";
-    formError.textContent = error.message;
-    uploadTitle.textContent = "Drop this member's screenshot here";
-    uploadHelp.textContent = "PNG, JPG or WEBP · Optimized automatically";
-  } finally {
-    processingProofs.delete(memberIndex);
-    updateSubmitState();
-  }
-});
-
-function updateSubmitState() {
-  const teamSize = Number(form.elements.teamSize.value);
-  const ready = form.checkValidity() && proofFiles.size === teamSize && processingProofs.size === 0;
+  validateUniqueDroppUsernames();
+  const ready = form.checkValidity();
   submitButton.disabled = !ready;
-  submitLabel.textContent = processingProofs.size ? "Optimizing screenshots..." : ready ? "Submit team" : "Complete all fields";
+  submitLabel.textContent = ready ? "Submit team" : "Complete all fields";
+}
+
+function startSubmitTimer() {
+  isSubmitting = true;
+  submitStartedAt = Date.now();
+  updateSubmitState();
+  submitTimer = window.setInterval(updateSubmitState, 1000);
+}
+
+function stopSubmitTimer() {
+  isSubmitting = false;
+  window.clearInterval(submitTimer);
+  submitTimer = null;
 }
 
 form.addEventListener("input", updateSubmitState);
@@ -201,27 +186,26 @@ form.addEventListener("change", updateSubmitState);
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   formError.textContent = "";
+  validateUniqueDroppUsernames();
 
   if (!form.checkValidity()) {
-    formError.textContent = "Almost there. Please complete every required field.";
-    form.querySelector(":invalid")?.focus();
+    const invalidField = form.querySelector(":invalid");
+    formError.textContent = invalidField?.validationMessage || "Almost there. Please complete every required field.";
+    invalidField?.focus();
     updateSubmitState();
     return;
   }
 
-  submitButton.disabled = true;
-  submitLabel.textContent = "Saving registration...";
+  startSubmitTimer();
 
   try {
     const formData = new FormData(form);
-    for (let index = 1; index <= Number(form.elements.teamSize.value); index += 1) {
-      formData.delete(`member${index}Screenshot`);
-      formData.append(`member${index}Screenshot`, proofFiles.get(index));
-    }
+    const payload = Object.fromEntries(formData.entries());
 
     const response = await fetch("/api/registrations", {
       method: "POST",
-      body: formData,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     });
     const result = await response.json();
 
@@ -236,6 +220,7 @@ form.addEventListener("submit", async (event) => {
   } catch (error) {
     formError.textContent = error.message;
   } finally {
+    stopSubmitTimer();
     updateSubmitState();
   }
 });
