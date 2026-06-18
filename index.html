@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#aaa3f4" />
     <title>Hackfluence 2026 | Team Registration</title>
-    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./styles.css?v=mentorship-round-2" />
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
   </head>
   <body>
@@ -14,7 +14,7 @@
       <a class="brand" href="#" aria-label="Hackfluence 2026">
         <img src="./assets/hackfluence-wordmark.svg" alt="Hackfluence 2026" />
       </a>
-      <span class="step-pill"><small>Step</small><b id="progressStep">01</b><i>/ 03</i></span>
+      <span class="step-pill"><small>Step</small><b id="progressStep">01</b><i>/ 04</i></span>
       <div class="powered-by">
         <span>Powered by</span>
         <a href="https://ondropp.app/signup" target="_blank" rel="noreferrer" aria-label="Sign up for Dropp">
@@ -29,27 +29,15 @@
           <p class="eyebrow">Official team check-in</p>
           <h1><span class="hero-line">Ready to make</span><span class="hero-line hero-accent">influence happen?</span></h1>
           <p class="lede">
-            Register your full team, share your Dropp profile links, and lock in
-            your place at Hackfluence 2026.
+            Confirm your shortlisted team, project, theme, track, and LinkedIn
+            announcement for the mentorship round.
           </p>
           <div class="hero-tags" aria-label="Registration highlights">
-            <span>2–4 members</span>
-            <span>Every profile verified</span>
-            <span>3 minute check-in</span>
+            <span>Shortlisted teams</span>
+            <span>LinkedIn post required</span>
+            <span>Mentorship round</span>
           </div>
         </div>
-        <aside class="info-card">
-          <div class="info-card-top">
-            <span>Before you begin</span>
-            <span class="scribble">3 mins</span>
-          </div>
-          <ul>
-            <li>Teams must have <strong>2–4 members</strong>.</li>
-            <li>The team leader counts as Member 1.</li>
-            <li>Every member needs a Dropp account.</li>
-            <li>Keep each member's Dropp profile URL ready.</li>
-          </ul>
-        </aside>
       </section>
 
       <form id="registrationForm" novalidate>
@@ -65,6 +53,42 @@
           <div class="field full">
             <label for="teamName">Team name <em>*</em></label>
             <input id="teamName" name="teamName" type="text" placeholder="The name you'll win with" required />
+          </div>
+
+          <div class="field full">
+            <label for="projectName">Project name <em>*</em></label>
+            <input id="projectName" name="projectName" type="text" placeholder="Your Hackfluence project name" required />
+          </div>
+
+          <div class="choice-grid">
+            <fieldset class="choice-card">
+              <legend>Which track do you belong to? <em>*</em></legend>
+              <div class="stacked-options">
+                <label>
+                  <input type="radio" name="track" value="engineering" required />
+                  <span>Engineering students</span>
+                </label>
+                <label>
+                  <input type="radio" name="track" value="b-school" required />
+                  <span>B-school students</span>
+                </label>
+              </div>
+            </fieldset>
+
+            <div class="field choice-card">
+              <label for="theme">Hackathon theme <em>*</em></label>
+              <select id="theme" name="theme" required>
+                <option value="">Select your theme</option>
+                <option value="ai-for-creator-tools">Artificial Intelligence (AI) for Creator Tools</option>
+                <option value="creator-economy">Creator Economy</option>
+                <option value="digital-marketing">Digital Marketing</option>
+                <option value="social-commerce">Social Commerce</option>
+                <option value="brand-creator-collaboration">Brand-Creator Collaboration</option>
+                <option value="creator-growth-monetization">Creator Growth &amp; Monetization</option>
+                <option value="influencer-discovery-campaign-management">Influencer Discovery &amp; Campaign Management</option>
+                <option value="creator-brand-challenges">Solutions for Challenges Faced by Creators and Brands</option>
+              </select>
+            </div>
           </div>
 
           <fieldset class="size-picker">
@@ -104,38 +128,44 @@
           <div class="section-heading">
             <span class="section-number blue">03</span>
             <div>
-              <p class="section-kicker">Final check</p>
-              <h2>Join the Dropp side</h2>
-              <p>Complete these quick checks to finish registration.</p>
+              <p class="section-kicker">Announcement</p>
+              <h2>Post your shortlist update</h2>
+              <p>Use this draft for LinkedIn, then paste every team member's public post URL below.</p>
             </div>
+          </div>
+
+          <div class="linkedin-draft-card">
+            <div class="linkedin-share-head">
+              <span class="linkedin-icon">in</span>
+              <strong>LinkedIn post content</strong>
+            </div>
+            <p id="linkedinDraftPreview"></p>
+            <button id="copyLinkedinDraft" class="copy-button" type="button">Copy post content</button>
           </div>
 
           <div class="proof-intro">
             <div>
-              <p class="field-label">Proof required from every team member <em>*</em></p>
-              <p class="helper">Each member must create a Dropp profile, paste their own profile URL, follow every social handle, and tick their checkpoint.</p>
+              <p class="field-label">LinkedIn post URL required from every team member <em>*</em></p>
+              <p class="helper">If your team has 2 members, both the leader and Member 2 must paste their LinkedIn post URL. For 3 or 4 members, every selected member must do the same.</p>
             </div>
-            <a class="reference-link" href="https://drive.google.com/file/d/1T8oDQkWOtJ4vy5gLL9F5sQINAXiAFdWZ/view?usp=drivesdk" target="_blank" rel="noreferrer">
-              View profile URL reference <span>↗</span>
-            </a>
           </div>
 
-          <div class="social-block">
-              <p class="field-label">Follow Dropp everywhere <em>*</em></p>
-              <p class="helper">Every team member must follow all three handles before completing their checkpoint below.</p>
-              <div class="social-links">
-                <a href="https://ondropp.app/signup" target="_blank" rel="noreferrer">Sign up on Dropp <span>↗</span></a>
-                <a href="https://www.instagram.com/dropp_app" target="_blank" rel="noreferrer">Instagram <span>↗</span></a>
-                <a href="https://x.com/ondroppapp" target="_blank" rel="noreferrer">X / Twitter <span>↗</span></a>
-                <a href="https://www.linkedin.com/company/ondropp/" target="_blank" rel="noreferrer">LinkedIn <span>↗</span></a>
-              </div>
-          </div>
+          <div id="memberLinkedinPosts" class="member-proofs"></div>
+        </section>
 
-          <div id="memberProofs" class="member-proofs"></div>
+        <section class="form-section">
+          <div class="section-heading">
+            <span class="section-number pink">04</span>
+            <div>
+              <p class="section-kicker">Final check</p>
+              <h2>Submit for mentorship</h2>
+              <p>Confirm the details before sending your team's response.</p>
+            </div>
+          </div>
 
           <label class="confirm-check terms-check">
             <input type="checkbox" name="accuracyConfirmation" required />
-            <span>I confirm these details are accurate and my team has 2–4 members.</span>
+            <span>I confirm these team, project, track, theme, member, and LinkedIn post URL details are accurate for every selected team member.</span>
           </label>
 
           <div class="submit-row">
@@ -154,64 +184,27 @@
           <img src="./assets/dropp-logo-mark.png" alt="" />
           <span>+</span>
         </div>
-        <p class="eyebrow">Registration received</p>
-        <h2><span id="successTeamName">Your team</span> is officially in.</h2>
-        <p class="success-copy">Share the news on LinkedIn and let the world know you're building at Hackfluence 2026.</p>
+        <p class="eyebrow">Mentorship form submitted</p>
+        <h2><span id="successTeamName">Your team</span> is ready for review.</h2>
+        <p class="success-copy">Your team details, project information, selected theme, track, and every member's LinkedIn announcement URL have been saved.</p>
 
-        <div class="linkedin-share">
-          <div class="linkedin-share-head">
-            <span class="linkedin-icon">in</span>
-            <strong>Your LinkedIn post is ready</strong>
+        <div class="success-receipt" aria-label="Submission summary">
+          <div>
+            <span>01</span>
+            <strong>Team details saved</strong>
           </div>
-          <p id="linkedinDraft"></p>
+          <div>
+            <span>02</span>
+            <strong>Project and theme recorded</strong>
+          </div>
+          <div>
+            <span>03</span>
+            <strong>Member LinkedIn URLs verified</strong>
+          </div>
         </div>
       </div>
     </div>
 
-    <template id="memberTemplate">
-      <article class="member-card">
-        <div class="member-card-head">
-          <span class="member-index"></span>
-          <div>
-            <p class="member-role"></p>
-            <h3 class="member-title"></h3>
-          </div>
-          <span class="required-note">Required</span>
-        </div>
-        <div class="field-grid">
-          <div class="field">
-            <label class="name-label"></label>
-            <input class="name-input" type="text" placeholder="Full name" required />
-          </div>
-          <div class="field">
-            <label class="email-label"></label>
-            <input class="email-input" type="email" placeholder="name@example.com" required />
-          </div>
-        </div>
-      </article>
-    </template>
-
-    <template id="proofTemplate">
-      <article class="proof-card">
-        <div class="proof-card-head">
-          <span class="member-index proof-index"></span>
-          <div>
-            <p class="member-role proof-role"></p>
-            <h3 class="proof-title"></h3>
-          </div>
-          <span class="required-note">Profile URL + checkpoint</span>
-        </div>
-        <div class="field">
-          <label class="profile-url-label"></label>
-          <input class="profile-url-input" type="url" inputmode="url" placeholder="Paste your Dropp profile URL" title="Use your own Dropp profile URL from your profile page." required />
-        </div>
-        <label class="confirm-check member-check">
-          <input class="proof-check" type="checkbox" required />
-          <span class="proof-check-label"></span>
-        </label>
-      </article>
-    </template>
-
-    <script src="./app.js"></script>
+    <script src="./app.js?v=mentorship-round-2"></script>
   </body>
 </html>

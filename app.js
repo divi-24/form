@@ -1,6 +1,6 @@
 const form = document.querySelector("#registrationForm");
 const membersContainer = document.querySelector("#members");
-const memberProofs = document.querySelector("#memberProofs");
+const memberLinkedinPosts = document.querySelector("#memberLinkedinPosts");
 const memberSummary = document.querySelector("#memberSummary");
 const progressStep = document.querySelector("#progressStep");
 const formError = document.querySelector("#formError");
@@ -8,53 +8,72 @@ const successModal = document.querySelector("#successModal");
 const submitButton = document.querySelector("#submitButton");
 const submitLabel = submitButton.querySelector(".submit-label");
 const successTeamName = document.querySelector("#successTeamName");
-const linkedinDraft = document.querySelector("#linkedinDraft");
+const linkedinDraftPreview = document.querySelector("#linkedinDraftPreview");
+const copyLinkedinDraft = document.querySelector("#copyLinkedinDraft");
 
 const savedMembers = new Map();
-const droppUsernamePattern = /^[a-z0-9][a-z0-9_-]*$/i;
 let generatedLinkedinPost = "";
 let isSubmitting = false;
 let submitStartedAt = 0;
 let submitTimer = null;
 
-function createLinkedinPost(teamName) {
-  return `We're officially in for Hackfluence 2026!
+function getVisibleMembers() {
+  return [...document.querySelectorAll(".member-card")].map((card, index) => ({
+    role: index === 0 ? "Team Lead" : `Member ${index + 1}`,
+    name: card.querySelector(".name-input").value.trim(),
+  }));
+}
 
-Team ${teamName} is ready to build, experiment, and turn bold ideas into real influence.
+function formatMemberLine(members) {
+  return members
+    .map((member, index) => {
+      const fallbackName = index === 0 ? "[Team Lead]" : `[Member ${index + 1}]`;
+      return `• ${member.name || fallbackName}`;
+    })
+    .join("\n");
+}
 
-Excited to take on the challenge with Dropp and connect with an incredible community of builders.
+function createLinkedinPost(teamName, projectName) {
+  const safeTeamName = teamName.trim() || "[Team Name]";
+  const safeProjectName = projectName.trim() || "[Project Name]";
+  const members = formatMemberLine(getVisibleMembers());
 
-Follow Dropp on LinkedIn: https://www.linkedin.com/company/ondropp/
+  return `From 1,500+ registrations and 700+ teams to the Hackfluence 2026 Mentorship Round.
 
-#Hackfluence2026 #Dropp #Hackathon #Builders #CreatorEconomy`;
+And today, we're excited to share that Team ${safeTeamName} is one of the teams moving forward.
+
+Being selected from a pool of talented builders, creators, marketers, designers, and innovators is both humbling and motivating. ❤️
+
+Over the coming days, we'll be refining our vision, validating assumptions, gathering feedback from mentors, and transforming ${safeProjectName} into something that can create real impact.
+
+A huge shoutout to Dropp and CodeBenders for creating a platform where ideas are not only welcomed but actively nurtured. Initiatives like Hackfluence remind us that innovation grows fastest when ambitious people are given the opportunity to build.
+
+👥 Our Team:
+${members}
+
+To everyone who supported us, challenged our ideas, reviewed our PPTs, and believed in our vision, thank you. 🙌
+
+The mentorship round is not the finish line.
+
+It's Day One.
+
+Let's build something worth remembering. 🚀
+
+Dropp: https://www.linkedin.com/company/ondropp/
+CodeBenders: https://www.linkedin.com/in/codebenders-igdtuw/
+
+#Hackfluence2026 #Dropp #CodeBenders #CreatorEconomy #Innovation #Hackathon #BuildInPublic #Startups #Founders #TechForCreators #FutureOfWork #StudentBuilders`;
 }
 
 function saveVisibleMembers() {
   document.querySelectorAll(".member-card").forEach((card) => {
     const index = Number(card.dataset.member);
-    const profileUrlInput = document.querySelector(`#member${index}DroppProfileUrl`);
     savedMembers.set(index, {
       name: card.querySelector(".name-input").value,
       email: card.querySelector(".email-input").value,
-      droppProfileUrl: profileUrlInput?.value || "",
+      linkedinPostUrl: document.querySelector(`#member${index}LinkedinPostUrl`)?.value || "",
     });
   });
-}
-
-function getDroppUsername(value) {
-  try {
-    const url = new URL(value.trim());
-    const [, profileSegment, username] = url.pathname.replace(/\/+$/, "").split("/");
-    const isDroppHost = ["ondropp.app", "www.ondropp.app"].includes(url.hostname.toLowerCase());
-
-    if (url.protocol !== "https:" || !isDroppHost || profileSegment !== "profile" || !droppUsernamePattern.test(username)) {
-      return "";
-    }
-
-    return username.toLowerCase();
-  } catch {
-    return "";
-  }
 }
 
 function createMemberCard(index, saved) {
@@ -90,48 +109,45 @@ function createMemberCard(index, saved) {
   return card;
 }
 
-function createProofCard(index, saved) {
+function createLinkedinPostUrlCard(index, saved) {
   const isLeader = index === 1;
-  const proofCard = document.createElement("article");
-  proofCard.className = "proof-card";
-  proofCard.dataset.member = index;
+  const card = document.createElement("article");
+  card.className = "proof-card";
+  card.dataset.member = index;
 
-  proofCard.innerHTML = `
+  card.innerHTML = `
     <div class="proof-card-head">
       <span class="member-index proof-index">${String(index).padStart(2, "0")}</span>
       <div>
-        <p class="member-role proof-role">${isLeader ? "Team leader proof" : "Team member proof"}</p>
+        <p class="member-role proof-role">${isLeader ? "Team leader post" : "Team member post"}</p>
         <h3 class="proof-title">${isLeader ? "Team leader" : `Member ${index}`}</h3>
       </div>
-      <span class="required-note">Profile URL + checkpoint</span>
+      <span class="required-note">Required</span>
     </div>
     <div class="field">
-      <label class="profile-url-label" for="member${index}DroppProfileUrl">${isLeader ? "Leader" : `Member ${index}`} Dropp profile URL *</label>
-      <input id="member${index}DroppProfileUrl" class="profile-url-input" name="member${index}DroppProfileUrl" type="url" inputmode="url" placeholder="Paste your Dropp profile URL" title="Use your own Dropp profile URL from your profile page." required />
+      <label for="member${index}LinkedinPostUrl">${isLeader ? "Leader" : `Member ${index}`} LinkedIn post URL *</label>
+      <input id="member${index}LinkedinPostUrl" class="linkedin-post-url-input" name="member${index}LinkedinPostUrl" type="url" inputmode="url" placeholder="https://www.linkedin.com/posts/..." required />
     </div>
-    <label class="confirm-check member-check">
-      <input class="proof-check" name="member${index}DroppConfirmation" type="checkbox" required />
-      <span class="proof-check-label">${isLeader ? "The team leader" : `Member ${index}`} confirms this is their own Dropp profile and they followed all social handles.</span>
-    </label>
   `;
 
-  proofCard.querySelector(".profile-url-input").value = saved.droppProfileUrl || "";
+  card.querySelector(".linkedin-post-url-input").value = saved.linkedinPostUrl || "";
 
-  return proofCard;
+  return card;
 }
 
 function renderMembers(size) {
   saveVisibleMembers();
   membersContainer.innerHTML = "";
-  memberProofs.innerHTML = "";
+  memberLinkedinPosts.innerHTML = "";
 
   for (let index = 1; index <= size; index += 1) {
     const saved = savedMembers.get(index) || {};
     membersContainer.appendChild(createMemberCard(index, saved));
-    memberProofs.appendChild(createProofCard(index, saved));
+    memberLinkedinPosts.appendChild(createLinkedinPostUrlCard(index, saved));
   }
 
-  memberSummary.textContent = `Showing fields for ${size} team members.`;
+  memberSummary.textContent = `Showing fields for ${size} team members. Each member must submit their LinkedIn post URL.`;
+  updateLinkedinDraft();
   updateSubmitState();
 }
 
@@ -149,29 +165,42 @@ document.querySelectorAll(".form-section").forEach((section, index) => {
   observer.observe(section);
 });
 
-function validateUniqueDroppUsernames() {
-  const seenUsernames = new Map();
+function validateLinkedinPostUrl(input) {
+  input.setCustomValidity("");
 
-  document.querySelectorAll(".profile-url-input").forEach((input) => {
+  if (!input.value.trim()) {
+    input.setCustomValidity("Paste your public LinkedIn post URL.");
+    return;
+  }
+
+  try {
+    const url = new URL(input.value.trim());
+    const hostname = url.hostname.toLowerCase();
+    const isLinkedinHost = hostname === "linkedin.com" || hostname.endsWith(".linkedin.com");
+
+    if (url.protocol !== "https:" || !isLinkedinHost) {
+      input.setCustomValidity("Paste a valid LinkedIn URL.");
+    }
+  } catch {
+    input.setCustomValidity("Paste a valid LinkedIn URL.");
+  }
+}
+
+function validateFilledFields() {
+  form.querySelectorAll('input[required][type="text"], input[required][type="email"]').forEach((input) => {
     input.setCustomValidity("");
 
-    const username = getDroppUsername(input.value);
-    if (input.value.trim() && !username) {
-      input.setCustomValidity("Use your own Dropp profile URL from your profile page.");
-      return;
+    if (!input.value.trim()) {
+      input.setCustomValidity("This field is required.");
     }
-
-    if (!username) return;
-
-    const firstInput = seenUsernames.get(username);
-    if (firstInput) {
-      input.setCustomValidity("Each team member must use a unique Dropp username.");
-      firstInput.setCustomValidity("Each team member must use a unique Dropp username.");
-      return;
-    }
-
-    seenUsernames.set(username, input);
   });
+
+  document.querySelectorAll(".linkedin-post-url-input").forEach(validateLinkedinPostUrl);
+}
+
+function updateLinkedinDraft() {
+  generatedLinkedinPost = createLinkedinPost(form.elements.teamName.value, form.elements.projectName.value);
+  linkedinDraftPreview.textContent = generatedLinkedinPost;
 }
 
 function updateSubmitState() {
@@ -182,7 +211,8 @@ function updateSubmitState() {
     return;
   }
 
-  validateUniqueDroppUsernames();
+  validateFilledFields();
+  formError.textContent = "";
   const ready = form.checkValidity();
   submitButton.disabled = !ready;
   submitLabel.textContent = ready ? "Submit team" : "Complete all fields";
@@ -202,12 +232,26 @@ function stopSubmitTimer() {
 }
 
 form.addEventListener("input", updateSubmitState);
+form.addEventListener("input", updateLinkedinDraft);
 form.addEventListener("change", updateSubmitState);
+form.addEventListener("change", updateLinkedinDraft);
+
+copyLinkedinDraft.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(generatedLinkedinPost);
+    copyLinkedinDraft.textContent = "Copied";
+    window.setTimeout(() => {
+      copyLinkedinDraft.textContent = "Copy post content";
+    }, 1400);
+  } catch {
+    copyLinkedinDraft.textContent = "Select and copy the text above";
+  }
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
   formError.textContent = "";
-  validateUniqueDroppUsernames();
+  validateFilledFields();
 
   if (!form.checkValidity()) {
     const invalidField = form.querySelector(":invalid");
@@ -233,9 +277,7 @@ form.addEventListener("submit", async (event) => {
     if (!response.ok) throw new Error(result.error || "Could not save the registration.");
 
     const teamName = form.elements.teamName.value.trim();
-    generatedLinkedinPost = createLinkedinPost(teamName);
     successTeamName.textContent = teamName;
-    linkedinDraft.textContent = generatedLinkedinPost;
     successModal.hidden = false;
     document.body.classList.add("modal-open");
   } catch (error) {
