@@ -2,6 +2,7 @@ const form = document.querySelector("#registrationForm");
 const membersContainer = document.querySelector("#members");
 const memberLinkedinPosts = document.querySelector("#memberLinkedinPosts");
 const memberSummary = document.querySelector("#memberSummary");
+const slotOptions = document.querySelector("#slotOptions");
 const progressStep = document.querySelector("#progressStep");
 const formError = document.querySelector("#formError");
 const successModal = document.querySelector("#successModal");
@@ -16,6 +17,8 @@ let generatedLinkedinPost = "";
 let isSubmitting = false;
 let submitStartedAt = 0;
 let submitTimer = null;
+let slotAvailabilityLoaded = false;
+let hasAvailableSlots = false;
 
 function getVisibleMembers() {
   return [...document.querySelectorAll(".member-card")].map((card, index) => ({
@@ -155,6 +158,51 @@ document.querySelectorAll('input[name="teamSize"]').forEach((radio) => {
   radio.addEventListener("change", (event) => renderMembers(Number(event.target.value)));
 });
 
+function renderSlotOptions(slots) {
+  slotAvailabilityLoaded = true;
+  hasAvailableSlots = slots.some((slot) => !slot.full);
+  slotOptions.innerHTML = "";
+
+  slots.forEach((slot) => {
+    const percentFull = Math.min(100, Math.round((slot.taken / slot.capacity) * 100));
+    const label = document.createElement("label");
+    label.className = `slot-option${slot.full ? " is-full" : ""}`;
+    label.innerHTML = `
+      <input type="radio" name="mentorSlot" value="${slot.id}" ${slot.full ? "disabled" : ""} required />
+      <span class="slot-radio" aria-hidden="true"></span>
+      <span class="slot-content">
+        <span class="slot-title">${slot.label}</span>
+        <span class="slot-time">${slot.time}</span>
+        <span class="slot-meta">${slot.remaining} of ${slot.capacity} slots left</span>
+        <span class="slot-progress" aria-hidden="true"><span style="width: ${percentFull}%"></span></span>
+      </span>
+    `;
+    slotOptions.appendChild(label);
+  });
+
+  if (!hasAvailableSlots) {
+    slotOptions.insertAdjacentHTML("beforeend", `<p class="form-error slot-load-error">All mentorship slots are currently full.</p>`);
+  }
+
+  updateSubmitState();
+}
+
+async function loadSlotAvailability() {
+  try {
+    const response = await fetch("/api/registrations", { headers: { Accept: "application/json" } });
+    const result = await response.json();
+
+    if (!response.ok) throw new Error(result.error || "Could not load slot availability.");
+
+    renderSlotOptions(result.slots);
+  } catch (error) {
+    slotAvailabilityLoaded = false;
+    hasAvailableSlots = false;
+    slotOptions.innerHTML = `<p class="form-error slot-load-error">${error.message}</p>`;
+    updateSubmitState();
+  }
+}
+
 document.querySelectorAll(".form-section").forEach((section, index) => {
   const observer = new IntersectionObserver(
     ([entry]) => {
@@ -196,6 +244,14 @@ function validateFilledFields() {
   });
 
   document.querySelectorAll(".linkedin-post-url-input").forEach(validateLinkedinPostUrl);
+
+  const selectedSlot = form.querySelector('input[name="mentorSlot"]:checked');
+  const slotInputs = [...form.querySelectorAll('input[name="mentorSlot"]')];
+  slotInputs.forEach((input) => input.setCustomValidity(""));
+
+  if (slotAvailabilityLoaded && hasAvailableSlots && !selectedSlot) {
+    slotInputs.find((input) => !input.disabled)?.setCustomValidity("Choose an available mentorship slot.");
+  }
 }
 
 function updateLinkedinDraft() {
@@ -213,7 +269,7 @@ function updateSubmitState() {
 
   validateFilledFields();
   formError.textContent = "";
-  const ready = form.checkValidity();
+  const ready = slotAvailabilityLoaded && hasAvailableSlots && form.checkValidity();
   submitButton.disabled = !ready;
   submitLabel.textContent = ready ? "Submit team" : "Complete all fields";
 }
@@ -253,9 +309,9 @@ form.addEventListener("submit", async (event) => {
   formError.textContent = "";
   validateFilledFields();
 
-  if (!form.checkValidity()) {
+  if (!slotAvailabilityLoaded || !hasAvailableSlots || !form.checkValidity()) {
     const invalidField = form.querySelector(":invalid");
-    formError.textContent = invalidField?.validationMessage || "Almost there. Please complete every required field.";
+    formError.textContent = invalidField?.validationMessage || "Almost there. Please complete every required field and choose an available slot.";
     invalidField?.focus();
     updateSubmitState();
     return;
@@ -289,3 +345,4 @@ form.addEventListener("submit", async (event) => {
 });
 
 renderMembers(2);
+loadSlotAvailability();

@@ -2,7 +2,7 @@ import "dotenv/config";
 import express from "express";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { saveRegistration, sendApiError } from "./lib/registration.js";
+import { getRegistrationAvailability, saveRegistration, sendApiError } from "./lib/registration.js";
 
 const app = express();
 const port = Number(process.env.PORT) || 4174;
@@ -21,6 +21,7 @@ app.get("/app.js", (_request, response) => sendFreshFile(response, "app.js", "js
 app.get("/styles.css", (_request, response) => sendFreshFile(response, "styles.css", "css"));
 app.use("/assets", express.static(path.join(rootDirectory, "assets")));
 
+app.get("/api/registrations", getRegistrationAvailability);
 app.post("/api/registrations", express.json(), saveRegistration);
 app.use((error, _request, response, _next) => sendApiError(error, response));
 

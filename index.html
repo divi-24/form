@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#aaa3f4" />
     <title>Hackfluence 2026 | Team Registration</title>
-    <link rel="stylesheet" href="./styles.css?v=mentorship-round-2" />
+    <link rel="stylesheet" href="./styles.css?v=mentorship-round-3" />
     <script defer src="https://cdn.vercel-insights.com/v1/script.js"></script>
   </head>
   <body>
@@ -14,7 +14,7 @@
       <a class="brand" href="#" aria-label="Hackfluence 2026">
         <img src="./assets/hackfluence-wordmark.svg" alt="Hackfluence 2026" />
       </a>
-      <span class="step-pill"><small>Step</small><b id="progressStep">01</b><i>/ 04</i></span>
+      <span class="step-pill"><small>Step</small><b id="progressStep">01</b><i>/ 05</i></span>
       <div class="powered-by">
         <span>Powered by</span>
         <a href="https://ondropp.app/signup" target="_blank" rel="noreferrer" aria-label="Sign up for Dropp">
@@ -155,7 +155,25 @@
 
         <section class="form-section">
           <div class="section-heading">
-            <span class="section-number pink">04</span>
+            <span class="section-number">04</span>
+            <div>
+              <p class="section-kicker">Mentorship timing</p>
+              <h2>Choose your pitch slot</h2>
+              <p>Each team gets 6 minutes. Full slots are disabled automatically.</p>
+            </div>
+          </div>
+
+          <fieldset class="slot-picker">
+            <legend>Select one available slot <em>*</em></legend>
+            <div id="slotOptions" class="slot-options" aria-live="polite">
+              <p class="helper">Loading slot availability...</p>
+            </div>
+          </fieldset>
+        </section>
+
+        <section class="form-section">
+          <div class="section-heading">
+            <span class="section-number pink">05</span>
             <div>
               <p class="section-kicker">Final check</p>
               <h2>Submit for mentorship</h2>
@@ -165,7 +183,7 @@
 
           <label class="confirm-check terms-check">
             <input type="checkbox" name="accuracyConfirmation" required />
-            <span>I confirm these team, project, track, theme, member, and LinkedIn post URL details are accurate for every selected team member.</span>
+            <span>I confirm these team, project, track, theme, mentorship slot, member, and LinkedIn post URL details are accurate for every selected team member.</span>
           </label>
 
           <div class="submit-row">
@@ -199,12 +217,16 @@
           </div>
           <div>
             <span>03</span>
+            <strong>Mentorship slot reserved</strong>
+          </div>
+          <div>
+            <span>04</span>
             <strong>Member LinkedIn URLs verified</strong>
           </div>
         </div>
       </div>
     </div>
 
-    <script src="./app.js?v=mentorship-round-2"></script>
+    <script src="./app.js?v=mentorship-round-3"></script>
   </body>
 </html>
